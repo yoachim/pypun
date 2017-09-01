@@ -7,6 +7,8 @@ def clean_string(instring):
     clean up a string to make it easier to match
     """
 
+    # XXX--strip out anything in parantheses.
+
     outstring = instring.replace('_', ' ').strip()
     outstring = outstring.lower()
     outstrings = outstring.split(' ')

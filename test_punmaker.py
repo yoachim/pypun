@@ -5,7 +5,7 @@ from punmaker import clean_string, punmaker
 
 # Some phrases to try and mash
 start_phrases = ['heavy petting', 'Petting Zoo', 'zoo party', 'daisy chain', 'chain link', 'ack ack'
-                 'blah blah', 'petting park', 'taco time', 'time_cop']
+                 'blah blah', 'petting park', 'taco time', 'time_cop', 'golden girls', 'girls gone wild']
 # Clean them
 start_phrases = [clean_string(phrase) for phrase in start_phrases]
 
