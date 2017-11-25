@@ -37,6 +37,15 @@ def phrase_masher(str1, str2):
     return result
 
 
+def isEnglish(s):
+    try:
+        str(s).encode('ascii')
+    except UnicodeEncodeError:
+        return False
+    else:
+        return True
+
+
 def punmaker(strings):
     """
     Generate puns
@@ -45,6 +54,18 @@ def punmaker(strings):
     ----------
     strings : list of strings
     """
+
+    # clean out the unicode crazy strings
+    strings = [string for string in strings if isEnglish(string)]
+
+    # remove any duplicates
+    strings = list(set(strings))
+
+    starting_words = set([title.split(' ')[0] for title in strings])
+    ending_words = set([title.split(' ')[-1] for title in strings])
+    possible_pun_words = starting_words.intersection(ending_words)
+
+    strings = [string for string in strings if len(possible_pun_words.intersection(string.split(' '))) > 0]
 
     # let's find the unique words, and make a dictionary to keep track
     uwords_dict = {}
@@ -79,7 +100,7 @@ def read_wikipedia(filename, title_length=2):
     """
 
     # Read in each line
-    with open(filename) as f:
+    with open(filename, encoding='utf-8') as f:
         lines = f.readlines()
 
     # Make all lower case and strip punctuation
