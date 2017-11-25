@@ -1,4 +1,4 @@
-import string
+import string, sys
 import itertools
 
 
@@ -46,7 +46,7 @@ def isEnglish(s):
         return True
 
 
-def punmaker(strings):
+def punmaker(strings, outfile=None, block=1e5, verbose=True):
     """
     Generate puns
 
@@ -54,6 +54,9 @@ def punmaker(strings):
     ----------
     strings : list of strings
     """
+
+    if outfile is not None:
+        outfile = open(outfile, "w", encoding='utf-8')
 
     # clean out the unicode crazy strings
     strings = [string for string in strings if isEnglish(string)]
@@ -82,15 +85,36 @@ def punmaker(strings):
         for word in words:
             uwords_dict[word].append(i)
 
+    max_length = len(uwords_dict)
     # Now to loop through each key and see what combinations can be made.
     results = []
-    for key in uwords_dict:
+    for i, key in enumerate(uwords_dict):
         if len(uwords_dict[key]) > 1:
             combos = itertools.combinations(uwords_dict[key], 2)
             for combo in combos:
                 mashup = phrase_masher(strings[combo[0]], strings[combo[1]])
                 if mashup is not None:
                     results.append(mashup)
+                    # dump the output to a file
+                    if outfile is not None and len(results) > block:
+                        for pun in results:
+                            print(pun, file=outfile)
+                        results = []
+        if verbose:
+            progress = i/max_length*100
+            text = "\rprogress=%.1f%%" % progress
+            sys.stdout.write(text)
+            sys.stdout.flush()
+
+    if verbose:
+        print("")
+    # Get any straglers
+    if outfile is not None:
+        for pun in results:
+            print(pun, file=outfile)
+            results = []
+        outfile.close()
+
     return results
 
 
